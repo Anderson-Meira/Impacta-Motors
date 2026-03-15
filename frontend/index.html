@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>IMPACTA MOTORS | Gestão Profissional</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root { --p: #f37021; --s: #001d3d; --bg: #f8f9fa; --white: #ffffff; --gray: #6c757d; }
+        body { font-family: 'Montserrat', sans-serif; background: var(--bg); color: #333; margin: 0; display: flex; }
+        nav { width: 280px; background: var(--s); height: 100vh; position: fixed; color: white; display: flex; flex-direction: column; }
+        .logo-area { padding: 40px 20px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .logo-icon { width: 50px; fill: var(--p); margin-bottom: 10px; }
+        .logo-text { font-weight: 800; font-size: 1.4rem; color: white; margin: 0; text-transform: uppercase; }
+        .logo-text span { color: var(--p); }
+        nav button { width: 100%; padding: 18px 25px; background: none; border: none; color: #ced4da; text-align: left; cursor: pointer; font-weight: 600; transition: 0.3s; }
+        nav button:hover, nav button.active { background: rgba(255,255,255,0.05); color: var(--p); border-left: 4px solid var(--p); }
+        main { margin-left: 280px; padding: 40px; width: 100%; box-sizing: border-box; }
+        .tab { display: none; animation: fadeIn 0.3s ease; }
+        .active-tab { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 30px; }
+        .stat-card { background: var(--white); padding: 25px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border-bottom: 4px solid var(--p); }
+        .stat-card small { color: var(--gray); font-weight: 700; text-transform: uppercase; font-size: 0.7rem; }
+        .stat-card h2 { margin: 10px 0 0 0; color: var(--s); font-size: 1.8rem; }
+        .form-container { background: var(--white); padding: 30px; border-radius: 15px; margin-bottom: 30px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        .grid-f { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; align-items: end; }
+        label { display: block; font-size: 11px; font-weight: 800; color: var(--gray); margin-bottom: 5px; text-transform: uppercase; }
+        input, select { width: 100%; padding: 12px; border: 2px solid #eee; border-radius: 8px; font-family: inherit; font-weight: 600; outline: none; box-sizing: border-box; }
+        input:focus { border-color: var(--p); }
+        .btn-p { background: var(--p); color: white; border: none; padding: 14px; border-radius: 8px; cursor: pointer; font-weight: 800; text-transform: uppercase; width: 100%; }
+        .v-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; }
+        .v-card { background: var(--white); border-radius: 15px; padding: 25px; box-shadow: 0 8px 24px rgba(0,0,0,0.05); border-left: 6px solid var(--p); }
+        .table-wrap { background: var(--white); border-radius: 15px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        table { width: 100%; border-collapse: collapse; }
+        th { background: #f8f9fa; padding: 18px; text-align: left; font-size: 11px; color: var(--gray); }
+        td { padding: 18px; border-bottom: 1px solid #f1f3f5; font-size: 14px; font-weight: 600; }
+        .btn-e { color: #1971c2; background: #e7f5ff; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: 700; margin-right: 5px; }
+        .btn-d { color: #e03131; background: #fff5f5; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: 700; }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="logo-area">
+        <svg class="logo-icon" viewBox="0 0 24 24"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/></svg>
+        <h2 class="logo-text">Impacta<span>Motors</span></h2>
+    </div>
+    <button onclick="tab('tab-v', this)" class="active">📦 ESTOQUE</button>
+    <button onclick="tab('tab-c', this)">👥 CLIENTES</button>
+    <button onclick="tab('tab-u', this)">👨‍💼 EQUIPE</button>
+    <button onclick="tab('tab-s', this)">📊 RELATÓRIOS</button>
+</nav>
+
+<main>
+    <div id="tab-v" class="tab active-tab">
+        <div class="form-container grid-f">
+            <div><label>Categoria</label><select id="v_tipo"><option>Carro</option><option>Moto</option></select></div>
+            <div><label>Modelo</label><input type="text" id="v_mod"></div>
+            <div><label>Marca</label><input type="text" id="v_mar"></div>
+            <div><label>Cor</label><input type="text" id="v_cor"></div>
+            <div><label>Preço</label><input type="text" id="v_pre" oninput="mR(this)"></div>
+            <button class="btn-p" id="btn-v" onclick="saveV()">Salvar</button>
+        </div>
+        <div class="v-grid" id="res-v"></div>
+    </div>
+
+    <div id="tab-c" class="tab">
+        <div class="form-container grid-f">
+            <div><label>Nome</label><input type="text" id="c_nom"></div>
+            <div><label>E-mail</label><input type="text" id="c_ema"></div>
+            <div><label>Telefone</label><input type="text" id="c_tel"></div>
+            <button class="btn-p" id="btn-c" onclick="saveC()">Cadastrar</button>
+        </div>
+        <div class="table-wrap"><table><thead><tr><th>Nome</th><th>Email</th><th>Ações</th></tr></thead><tbody id="res-c"></tbody></table></div>
+    </div>
+
+    <div id="tab-u" class="tab">
+        <div class="form-container grid-f">
+            <div><label>Login</label><input type="text" id="u_nom"></div>
+            <div><label>Senha</label><input type="password" id="u_sen"></div>
+            <div><label>Cargo</label><select id="u_car"><option>Vendedor</option><option>Gerente</option></select></div>
+            <button class="btn-p" id="btn-u" onclick="saveU()">Salvar</button>
+        </div>
+        <div class="table-wrap"><table><thead><tr><th>Usuário</th><th>Cargo</th><th>Ações</th></tr></thead><tbody id="res-u"></tbody></table></div>
+    </div>
+
+    <div id="tab-s" class="tab">
+        <div class="stats-row">
+            <div class="stat-card"><small>Faturamento</small><h2 id="total-f">R$ 0,00</h2></div>
+            <div class="stat-card"><small>Vendas</small><h2 id="total-v">0</h2></div>
+            <div class="stat-card"><small>Ticket Médio</small><h2 id="ticket-m">R$ 0,00</h2></div>
+        </div>
+        <div class="form-container grid-f">
+            <div><label>Veículo</label><select id="sel-v"></select></div>
+            <div><label>Cliente</label><select id="sel-c"></select></div>
+            <div><label>Vendedor</label><select id="sel-u"></select></div>
+            <div><label>Valor Final</label><input type="text" id="s_val" oninput="mR(this)"></div>
+            <button class="btn-p" onclick="saveS()">Fechar Venda</button>
+        </div>
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>Data</th><th>Veículo</th><th>Cliente</th><th>Vendedor</th><th>Valor</th></tr></thead>
+                <tbody id="res-s"></tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+<script>
+    const API = "http://localhost:3000";
+    let editId = null;
+
+    function mR(i) { let v = i.value.replace(/\D/g,''); v = (v/100).toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'}); i.value = v; }
+    function toN(t) { return parseFloat(t.replace('R$', '').replace(/\./g, '').replace(',', '.').trim()) || 0; }
+
+    function tab(id, b) {
+        document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active-tab'));
+        document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));
+        document.getElementById(id).classList.add('active-tab');
+        b.classList.add('active'); editId = null; load();
+    }
+
+    async function load() {
+        const [v, c, u, s] = await Promise.all([
+            fetch(`${API}/veiculos`).then(r=>r.json()), fetch(`${API}/clientes`).then(r=>r.json()),
+            fetch(`${API}/usuarios`).then(r=>r.json()), fetch(`${API}/vendas`).then(r=>r.json())
+        ]);
+
+        // Veículos
+        document.getElementById('res-v').innerHTML = v.map(i=>`
+            <div class="v-card">
+                <small>${i.tipo}</small>
+                <h3>${i.modelo}</h3>
+                <div style="font-size:1.4rem; font-weight:800; margin:10px 0">R$ ${parseFloat(i.preco).toLocaleString('pt-BR')}</div>
+                <div style="font-size:12px; color:#666">MARCA: ${i.marca} | COR: ${i.cor}</div>
+                <div style="margin-top:15px">
+                    <button class="btn-e" onclick="preV(${JSON.stringify(i).replace(/"/g, '&quot;')})">EDITAR</button>
+                    <button class="btn-d" onclick="del('veiculos',${i.id})">EXCLUIR</button>
+                </div>
+            </div>`).join('');
+
+        // Clientes e Usuários
+        document.getElementById('res-c').innerHTML = c.map(i=>`<tr><td>${i.nome}</td><td>${i.email}</td><td><button class="btn-e" onclick="preC(${JSON.stringify(i).replace(/"/g, '&quot;')})">EDITAR</button></td></tr>`).join('');
+        document.getElementById('res-u').innerHTML = u.map(i=>`<tr><td>${i.nome_usuario}</td><td>${i.cargo}</td><td><button class="btn-e" onclick="preU(${JSON.stringify(i).replace(/"/g, '&quot;')})">EDITAR</button></td></tr>`).join('');
+        
+        // Relatório de Vendas e Indicadores
+        let totalF = 0;
+        document.getElementById('res-s').innerHTML = s.map(i=>{
+            totalF += parseFloat(i.valor_final);
+            return `<tr><td>${new Date(i.data_venda).toLocaleDateString()}</td><td>${i.carro}</td><td>${i.cliente}</td><td>${i.vendedor}</td><td>R$ ${parseFloat(i.valor_final).toLocaleString('pt-BR')}</td></tr>`;
+        }).join('');
+
+        document.getElementById('total-f').innerText = totalF.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
+        document.getElementById('total-v').innerText = s.length;
+        document.getElementById('ticket-m').innerText = (s.length ? totalF/s.length : 0).toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
+
+        // Preencher Selects de Venda
+        document.getElementById('sel-v').innerHTML = v.map(i=>`<option value="${i.id}">${i.modelo}</option>`).join('');
+        document.getElementById('sel-c').innerHTML = c.map(i=>`<option value="${i.id}">${i.nome}</option>`).join('');
+        document.getElementById('sel-u').innerHTML = u.map(i=>`<option value="${i.id}">${i.nome_usuario}</option>`).join('');
+    }
+
+    async function saveV() {
+        const d = { tipo: v_tipo.value, modelo: v_mod.value, marca: v_mar.value, cor: v_cor.value, preco: toN(v_pre.value) };
+        await fetch(editId ? `${API}/veiculos/${editId}` : `${API}/veiculos`, { method: editId?'PUT':'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(d)});
+        reset('v');
+    }
+    function preV(i) { editId=i.id; v_tipo.value=i.tipo; v_mod.value=i.modelo; v_mar.value=i.marca; v_cor.value=i.cor; v_pre.value=parseFloat(i.preco).toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); document.getElementById('btn-v').innerText="Atualizar"; }
+
+    async function saveC() {
+        const d = { nome: c_nom.value, email: c_ema.value, telefone: c_tel.value };
+        await fetch(editId ? `${API}/clientes/${editId}` : `${API}/clientes`, { method: editId?'PUT':'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(d)});
+        reset('c');
+    }
+    function preC(i) { editId=i.id; c_nom.value=i.nome; c_ema.value=i.email; c_tel.value=i.telefone; document.getElementById('btn-c').innerText="Atualizar"; }
+
+    async function saveU() {
+        const d = { nome_usuario: u_nom.value, senha: u_sen.value, cargo: u_car.value };
+        await fetch(editId ? `${API}/usuarios/${editId}` : `${API}/usuarios`, { method: editId?'PUT':'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(d)});
+        reset('u');
+    }
+    function preU(i) { editId=i.id; u_nom.value=i.nome_usuario; u_car.value=i.cargo; document.getElementById('btn-u').innerText="Atualizar"; }
+
+    async function saveS() {
+        const payload = {
+            veiculo_id: document.getElementById('sel-v').value,
+            cliente_id: document.getElementById('sel-c').value,
+            usuario_id: document.getElementById('sel-u').value,
+            valor_final: toN(document.getElementById('s_val').value)
+        };
+        if(!payload.valor_final) return alert("Insira o valor da venda!");
+        
+        await fetch(`${API}/vendas`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload)});
+        document.getElementById('s_val').value = '';
+        load();
+    }
+
+    function reset(p) { editId=null; document.querySelectorAll(`#tab-${p} input`).forEach(x=>x.value=''); document.getElementById(`btn-${p}`).innerText="Salvar"; load(); }
+    async function del(t, id) { if(confirm('Excluir?')) { await fetch(`${API}/${t}/${id}`,{method:'DELETE'}); load(); } }
+    window.onload = load;
+</script>
+</body>
+</html>
