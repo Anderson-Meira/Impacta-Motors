@@ -109,7 +109,6 @@ app.put('/usuarios/:id', async (req, res) => {
 // --- ROTA DE VENDAS (GERA O RELATÓRIO COM INNER JOIN) ---
 app.get('/vendas', async (req, res) => {
     try {
-        // Esta query une as 4 tabelas para mostrar nomes em vez de IDs
         const queryRelatorio = `
             SELECT 
                 v.id, 
@@ -162,6 +161,38 @@ app.delete('/:tabela/:id', async (req, res) => {
         console.error("Erro ao deletar:", err);
         res.status(500).json({ error: "Não é possível excluir: registro vinculado a outra tabela." });
     }
+});
+
+// --- [NOVAS ROTAS AC3] ENDPOINTS DE RELATÓRIO E INDICADORES ---
+
+// 1. Desempenho da Equipe (Agrupado por Vendedor para alimentar o gráfico)
+app.get('/indicadores/desempenho', async (req, res) => {
+    try {
+        const query = `
+            SELECT u.nome_usuario as vendedor, COUNT(v.id) as total_vendas, COALESCE(SUM(v.valor_final), 0) as valor_total
+            FROM usuarios u
+            LEFT JOIN vendas v ON u.id = v.usuario_id
+            WHERE u.cargo = 'Vendedor'
+            GROUP BY u.nome_usuario
+            ORDER BY valor_total DESC`;
+        const r = await pool.query(query);
+        res.json(r.rows);
+    } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// 2. Status Dinâmico do Estoque (Veículos vendidos vs disponíveis)
+app.get('/indicadores/estoque', async (req, res) => {
+    try {
+        const query = `
+            SELECT 
+                COUNT(ve.id) as total,
+                SUM(CASE WHEN v.id IS NOT NULL THEN 1 ELSE 0 END) as vendidos,
+                SUM(CASE WHEN v.id IS NULL THEN 1 ELSE 0 END) as disponiveis
+            FROM veiculos ve
+            LEFT JOIN vendas v ON ve.id = v.veiculo_id`;
+        const r = await pool.query(query);
+        res.json(r.rows[0]);
+    } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
 // --- INICIALIZAÇÃO ---
