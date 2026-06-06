@@ -31,11 +31,17 @@
         input, select { width: 100%; padding: 12px; border: 2px solid #eee; border-radius: 8px; font-family: inherit; font-weight: 600; outline: none; box-sizing: border-box; }
         input:focus { border-color: var(--p); }
         .btn-p { background: var(--p); color: white; border: none; padding: 14px; border-radius: 8px; cursor: pointer; font-weight: 800; text-transform: uppercase; width: 100%; }
+        
+        .filter-container { display: flex; gap: 10px; margin-bottom: 25px; }
+        .btn-filter { background: #e9ecef; color: var(--s); border: none; padding: 10px 20px; border-radius: 20px; font-weight: 700; font-size: 11px; text-transform: uppercase; cursor: pointer; transition: 0.2s; }
+        .btn-filter:hover { background: #dee2e6; }
+        .btn-filter.active-filter { background: var(--p); color: white; }
+
         .v-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; }
         .v-card { background: var(--white); border-radius: 15px; padding: 25px; box-shadow: 0 8px 24px rgba(0,0,0,0.05); border-left: 6px solid var(--p); }
         .table-wrap { background: var(--white); border-radius: 15px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-top: 20px; }
         table { width: 100%; border-collapse: collapse; }
-        th { background: #f8f9fa; padding: 18px; text-align: left; font-size: 11px; color: var(--gray); }
+        th { background: #f8f9fa; padding: 18px; text-align: left; font-size: 11px; color: var(--gray); text-transform: uppercase; font-weight: 800; }
         td { padding: 18px; border-bottom: 1px solid #f1f3f5; font-size: 14px; font-weight: 600; }
         .btn-e { color: #1971c2; background: #e7f5ff; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: 700; margin-right: 5px; }
         .btn-d { color: #e03131; background: #fff5f5; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: 700; }
@@ -65,6 +71,11 @@
             <div><label>Preço</label><input type="text" id="v_pre" oninput="mR(this)"></div>
             <button class="btn-p" id="btn-v" onclick="saveV()">Salvar</button>
         </div>
+        <div class="filter-container">
+            <button class="btn-filter active-filter" id="filtro-patio" onclick="filtrarEstoque('Todos', this)">🏬 Pátio Completo</button>
+            <button class="btn-filter" onclick="filtrarEstoque('Carro', this)">🚗 Carros</button>
+            <button class="btn-filter" onclick="filtrarEstoque('Moto', this)">🏍️ Motos</button>
+        </div>
         <div class="v-grid" id="res-v"></div>
     </div>
 
@@ -75,17 +86,31 @@
             <div><label>Telefone</label><input type="text" id="c_tel"></div>
             <button class="btn-p" id="btn-c" onclick="saveC()">Cadastrar</button>
         </div>
-        <div class="table-wrap"><table><thead><tr><th>Nome</th><th>Email</th><th>Ações</th></tr></thead><tbody id="res-c"></tbody></table></div>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr><th>Nome</th><th>Email</th><th>Telefone</th><th>Ações</th></tr>
+                </thead>
+                <tbody id="res-c"></tbody>
+            </table>
+        </div>
     </div>
 
     <div id="tab-u" class="tab">
         <div class="form-container grid-f">
-            <div><label>Login</label><input type="text" id="u_nom"></div>
-            <div><label>Senha</label><input type="password" id="u_sen"></div>
-            <div><label>Cargo</label><select id="u_car"><option>Vendedor</option><option>Gerente</option></select></div>
-            <button class="btn-p" id="btn-u" onclick="saveU()">Salvar</button>
+            <div><label>LOGIN</label><input type="text" id="u_nom"></div>
+            <div><label>SENHA</label><input type="password" id="u_sen"></div>
+            <div><label>CARGO</label><select id="u_car"><option>Vendedor</option><option>Gerente</option></select></div>
+            <button class="btn-p" id="btn-u" onclick="saveU()">SALVAR</button>
         </div>
-        <div class="table-wrap"><table><thead><tr><th>Usuário</th><th>Cargo</th><th>Ações</th></tr></thead><tbody id="res-u"></tbody></table></div>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr><th>USUÁRIO</th><th>CARGO</th><th>AÇÕES</th></tr>
+                </thead>
+                <tbody id="res-u"></tbody>
+            </table>
+        </div>
     </div>
 
     <div id="tab-s" class="tab">
@@ -94,18 +119,15 @@
             <div class="stat-card"><small>Vendas Consolidadas</small><h2 id="total-v">0</h2></div>
             <div class="stat-card"><small>Ticket Médio</small><h2 id="ticket-m">R$ 0,00</h2></div>
         </div>
-
         <div class="stats-row">
             <div class="stat-card blue-theme"><small>Frota Cadastrada</small><h2 id="stock-total">0</h2></div>
             <div class="stat-card green-theme"><small>Veículos Vendidos</small><h2 id="stock-sold">0</h2></div>
             <div class="stat-card"><small>Disponíveis em Pátio</small><h2 id="stock-avail">0</h2></div>
         </div>
-
         <div class="chart-container">
-            <label style="font-size: 14px; margin-bottom: 15px;">🏆 Gráfico de Desempenho da Equipe (Faturamento por Vendedor)</label>
+            <label style="font-size: 12px; margin-bottom: 15px; font-weight:800; color:var(--gray); text-transform:uppercase;">🏆 Desempenho da Equipe</label>
             <canvas id="chartDesempenho"></canvas>
         </div>
-
         <div class="form-container grid-f">
             <div><label>Veículo</label><select id="sel-v"></select></div>
             <div><label>Cliente</label><select id="sel-c"></select></div>
@@ -113,7 +135,11 @@
             <div><label>Valor Final</label><input type="text" id="s_val" oninput="mR(this)"></div>
             <button class="btn-p" onclick="saveS()">Fechar Venda</button>
         </div>
-
+        <div style="display: flex; justify-content: flex-end; margin-top: 25px;">
+            <button class="btn-p" onclick="exportarExcel()" style="width: auto; padding: 12px 24px; background: #2b8a3e; display: flex; align-items: center; gap: 8px;">
+                📥 Exportar Relatório para Excel (.csv)
+            </button>
+        </div>
         <div class="table-wrap">
             <table>
                 <thead><tr><th>Data</th><th>Veículo</th><th>Cliente</th><th>Vendedor</th><th>Valor</th></tr></thead>
@@ -126,7 +152,8 @@
 <script>
     const API = "http://localhost:3000";
     let editId = null;
-    let meuGrafico = null; // Instância global para limpar/re-renderizar o gráfico
+    let meuGrafico = null; 
+    let veiculosOriginais = [];
 
     function mR(i) { let v = i.value.replace(/\D/g,''); v = (v/100).toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'}); i.value = v; }
     function toN(t) { return parseFloat(t.replace('R$', '').replace(/\./g, '').replace(',', '.').trim()) || 0; }
@@ -138,17 +165,17 @@
         b.classList.add('active'); editId = null; load();
     }
 
-    async function load() {
-        const [v, c, u, s, indEstoque, indDesempenho] = await Promise.all([
-            fetch(`${API}/veiculos`).then(r=>r.json()), fetch(`${API}/clientes`).then(r=>r.json()),
-            fetch(`${API}/usuarios`).then(r=>r.json()), fetch(`${API}/vendas`).then(r=>r.json()),
-            fetch(`${API}/indicadores/estoque`).then(r=>r.json()), fetch(`${API}/indicadores/desempenho`).then(r=>r.json())
-        ]);
+    function filtrarEstoque(categoria, botao) {
+        document.querySelectorAll('.btn-filter').forEach(b => b.classList.remove('active-filter'));
+        botao.classList.add('active-filter');
+        const filtrados = categoria === 'Todos' ? veiculosOriginais : veiculosOriginais.filter(v => v.tipo && v.tipo.toLowerCase() === categoria.toLowerCase());
+        renderizarCardsVeiculos(filtrados);
+    }
 
-        // Veículos
-        document.getElementById('res-v').innerHTML = v.map(i=>`
+    function renderizarCardsVeiculos(lista) {
+        document.getElementById('res-v').innerHTML = lista.map(i=>`
             <div class="v-card">
-                <small>${i.tipo}</small>
+                <small>${i.tipo ? i.tipo.toUpperCase() : 'VEÍCULO'}</small>
                 <h3>${i.modelo}</h3>
                 <div style="font-size:1.4rem; font-weight:800; margin:10px 0">R$ ${parseFloat(i.preco).toLocaleString('pt-BR')}</div>
                 <div style="font-size:12px; color:#666">MARCA: ${i.marca} | COR: ${i.cor}</div>
@@ -157,50 +184,85 @@
                     <button class="btn-d" onclick="del('veiculos',${i.id})">EXCLUIR</button>
                 </div>
             </div>`).join('');
-
-        // Clientes e Usuários
-        document.getElementById('res-c').innerHTML = c.map(i=>`<tr><td>${i.nome}</td><td>${i.email}</td><td><button class="btn-e" onclick="preC(${JSON.stringify(i).replace(/"/g, '&quot;')})">EDITAR</button></td></tr>`).join('');
-        document.getElementById('res-u').innerHTML = u.map(i=>`<tr><td>${i.nome_usuario}</td><td>${i.cargo}</td><td><button class="btn-e" onclick="preU(${JSON.stringify(i).replace(/"/g, '&quot;')})">EDITAR</button></td></tr>`).join('');
-        
-        // Relatório de Vendas e Indicadores Monetários
-        let totalF = 0;
-        document.getElementById('res-s').innerHTML = s.map(i=>{
-            totalF += parseFloat(i.valor_final);
-            return `<tr><td>${new Date(i.data_venda).toLocaleDateString()}</td><td>${i.carro}</td><td>${i.cliente}</td><td>${i.vendedor}</td><td>R$ ${parseFloat(i.valor_final).toLocaleString('pt-BR')}</td></tr>`;
-        }).join('');
-
-        document.getElementById('total-f').innerText = totalF.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
-        document.getElementById('total-v').innerText = s.length;
-        document.getElementById('ticket-m').innerText = (s.length ? totalF/s.length : 0).toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
-
-        // [NOVO AC3] Renderizar Indicadores Dinâmicos de Estoque
-        document.getElementById('stock-total').innerText = indEstoque.total || 0;
-        document.getElementById('stock-sold').innerText = indEstoque.vendidos || 0;
-        document.getElementById('stock-avail').innerText = indEstoque.disponiveis || 0;
-
-        // Preencher Selects de Venda
-        document.getElementById('sel-v').innerHTML = v.map(i=>`<option value="${i.id}">${i.modelo}</option>`).join('');
-        document.getElementById('sel-c').innerHTML = c.map(i=>`<option value="${i.id}">${i.nome}</option>`).join('');
-        document.getElementById('sel-u').innerHTML = u.map(i=>`<option value="${i.id}">${i.nome_usuario}</option>`).join('');
-
-        // [NOVO AC3] Renderizar / Atualizar Gráfico do Chart.js
-        renderizarGrafico(indDesempenho);
     }
 
-    // [NOVO AC3] Função Geradora do Gráfico de Desempenho
+    async function load() {
+        try {
+            const [v, c, u, s, indEstoque, indDesempenho] = await Promise.all([
+                fetch(`${API}/veiculos`).then(r=>r.json()).catch(()=>[]), 
+                fetch(`${API}/clientes`).then(r=>r.json()).catch(()=>[]),
+                fetch(`${API}/usuarios`).then(r=>r.json()).catch(()=>[]), 
+                fetch(`${API}/vendas`).then(r=>r.json()).catch(()=>[]),
+                fetch(`${API}/indicadores/estoque`).then(r=>r.json()).catch(()=>({total:0,vendidos:0,disponiveis:0})), 
+                fetch(`${API}/indicadores/desempenho`).then(r=>r.json()).catch(()=>[])
+            ]);
+
+            veiculosOriginais = v;
+            renderizarCardsVeiculos(veiculosOriginais);
+
+            // Clientes
+            document.getElementById('res-c').innerHTML = c.map(i => {
+                const dadosSeguros = btoa(unescape(encodeURIComponent(JSON.stringify(i))));
+                return `<tr>
+                    <td>${i.nome || ''}</td>
+                    <td>${i.email || ''}</td>
+                    <td>${i.telefone || ''}</td>
+                    <td>
+                        <button class="btn-e" onclick="preC('${dadosSeguros}')">EDITAR</button>
+                        <button class="btn-d" onclick="del('clientes',${i.id})">EXCLUIR</button>
+                    </td>
+                </tr>`;
+            }).join('');
+
+            // Equipe
+            document.getElementById('res-u').innerHTML = u.map(i => {
+                const dadosBotao = JSON.stringify(i).replace(/"/g, '&quot;');
+                return `<tr>
+                    <td>${i.nome_usuario || ''}</td>
+                    <td>${i.cargo || ''}</td>
+                    <td>
+                        <button class="btn-e" onclick="preU(${dadosBotao})">EDITAR</button>
+                        <button class="btn-d" onclick="del('usuarios',${i.id})">EXCLUIR</button>
+                    </td>
+                </tr>`;
+            }).join('');
+            
+            // Vendas
+            let totalF = 0;
+            document.getElementById('res-s').innerHTML = s.map(i=>{
+                totalF += parseFloat(i.valor_final);
+                return `<tr><td>${new Date(i.data_venda).toLocaleDateString()}</td><td>${i.carro}</td><td>${i.cliente}</td><td>${i.vendedor}</td><td>R$ ${parseFloat(i.valor_final).toLocaleString('pt-BR')}</td></tr>`;
+            }).join('');
+
+            document.getElementById('total-f').innerText = totalF.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
+            document.getElementById('total-v').innerText = s.length;
+            document.getElementById('ticket-m').innerText = (s.length ? totalF/s.length : 0).toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
+
+            document.getElementById('stock-total').innerText = indEstoque.total || 0;
+            document.getElementById('stock-sold').innerText = indEstoque.vendidos || 0;
+            document.getElementById('stock-avail').innerText = indEstoque.disponiveis || 0;
+
+            document.getElementById('sel-v').innerHTML = v.map(i=>`<option value="${i.id}">${i.modelo}</option>`).join('');
+            document.getElementById('sel-c').innerHTML = c.map(i=>`<option value="${i.id}">${i.nome}</option>`).join('');
+            document.getElementById('sel-u').innerHTML = u.map(i=>`<option value="${i.id}">${i.nome_usuario}</option>`).join('');
+
+            renderizarGrafico(indDesempenho);
+        } catch (erro) {
+            console.error(erro);
+        }
+    }
+
     function renderizarGrafico(dados) {
         const labels = dados.map(d => d.vendedor);
         const valores = dados.map(d => parseFloat(d.valor_total));
-
-        if (meuGrafico) { meuGrafico.destroy(); } // Evita bugs ao atualizar dados
-
+        if (meuGrafico) { meuGrafico.destroy(); } 
         const ctx = document.getElementById('chartDesempenho').getContext('2d');
         meuGrafico = new Chart(ctx, {
             type: 'bar',
             data: {
                 labels: labels,
                 datasets: [{
-                    label: 'Faturamento por Vendedor (R$)',
+                    label: 'Faturamento por Vendedor',
                     data: valores,
                     backgroundColor: '#f37021',
                     borderColor: '#001d3d',
@@ -208,14 +270,26 @@
                     borderRadius: 6
                 }]
             },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: { beginAtZero: true, ticks: { callback: value => 'R$ ' + value.toLocaleString('pt-BR') } }
-                }
-            }
+            options: { responsive: true, maintainAspectRatio: false }
         });
+    }
+
+    function exportarExcel() {
+        const tabela = document.getElementById("res-s");
+        const linhas = tabela.querySelectorAll("tr");
+        if (linhas.length === 0) return alert("Não há dados!");
+        let csvConteudo = "\uFEFFData;Veiculo;Cliente;Vendedor;Valor Final\n";
+        linhas.forEach(l => {
+            const cols = l.querySelectorAll("td");
+            csvConteudo += `${cols[0].innerText};${cols[1].innerText};${cols[2].innerText};${cols[3].innerText};${cols[4].innerText.replace("R$", "").trim()}\n`;
+        });
+        const blob = new Blob([csvConteudo], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.setAttribute("download", "Relatorio_Vendas.csv");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
     }
 
     async function saveV() {
@@ -226,18 +300,53 @@
     function preV(i) { editId=i.id; v_tipo.value=i.tipo; v_mod.value=i.modelo; v_mar.value=i.marca; v_cor.value=i.cor; v_pre.value=parseFloat(i.preco).toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); document.getElementById('btn-v').innerText="Atualizar"; }
 
     async function saveC() {
-        const d = { nome: c_nom.value, email: c_ema.value, telephone: c_tel.value };
+        const d = { nome: c_nom.value, email: c_ema.value, telefone: c_tel.value };
         await fetch(editId ? `${API}/clientes/${editId}` : `${API}/clientes`, { method: editId?'PUT':'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(d)});
         reset('c');
     }
-    function preC(i) { editId=i.id; c_nom.value=i.nome; c_ema.value=i.email; c_tel.value=i.telefone; document.getElementById('btn-c').innerText="Atualizar"; }
+    function preC(encodedData) { 
+        const i = JSON.parse(decodeURIComponent(escape(atob(encodedData))));
+        editId = i.id; c_nom.value = i.nome || ''; c_ema.value = i.email || ''; c_tel.value = i.telefone || ''; 
+        document.getElementById('btn-c').innerText = "Atualizar"; 
+    }
 
     async function saveU() {
-        const d = { nome_usuario: u_nom.value, senha: u_sen.value, cargo: u_car.value };
-        await fetch(editId ? `${API}/usuarios/${editId}` : `${API}/usuarios`, { method: editId?'PUT':'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(d)});
-        reset('u');
+        const d = { 
+            nome_usuario: document.getElementById('u_nom').value.trim(), 
+            senha: document.getElementById('u_sen').value.trim(), 
+            cargo: document.getElementById('u_car').value 
+        };
+        
+        if(!d.nome_usuario) return alert("Por favor, digite o Login!");
+        if(!editId && !d.senha) return alert("Por favor, digite uma Senha!");
+
+        const url = editId ? `${API}/usuarios/${editId}` : `${API}/usuarios`;
+        
+        try {
+            const resposta = await fetch(url, { 
+                method: editId ? 'PUT' : 'POST', 
+                headers: {'Content-Type': 'application/json'}, 
+                body: JSON.stringify(d)
+            });
+            if(resposta.ok) {
+                reset('u');
+            } else {
+                const dadosErro = await resposta.json();
+                alert("Erro do Banco de Dados: " + (dadosErro.error || "Falha ao gravar."));
+            }
+        } catch (err) {
+            console.error(err);
+            alert("Erro crítico: Verifique se o seu terminal com 'node server.js' está ativo e sem erros.");
+        }
     }
-    function preU(i) { editId=i.id; u_nom.value=i.nome_usuario; u_car.value=i.cargo; document.getElementById('btn-u').innerText="Atualizar"; }
+
+    function preU(i) { 
+        editId = i.id; 
+        document.getElementById('u_nom').value = i.nome_usuario; 
+        document.getElementById('u_car').value = i.cargo; 
+        document.getElementById('u_sen').value = ""; 
+        document.getElementById('btn-u').innerText = "ATUALIZAR"; 
+    }
 
     async function saveS() {
         const payload = {
@@ -246,15 +355,29 @@
             usuario_id: document.getElementById('sel-u').value,
             valor_final: toN(document.getElementById('s_val').value)
         };
-        if(!payload.valor_final) return alert("Insira o valor da venda!");
-        
+        if(!payload.valor_final) return alert("Insira o valor!");
         await fetch(`${API}/vendas`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload)});
         document.getElementById('s_val').value = '';
         load();
     }
 
-    function reset(p) { editId=null; document.querySelectorAll(`#tab-${p} input`).forEach(x=>x.value=''); document.getElementById(`btn-${p}`).innerText="Salvar"; load(); }
-    async function del(t, id) { if(confirm('Excluir?')) { await fetch(`${API}/${t}/${id}`,{method:'DELETE'}); load(); } }
+    function reset(p) { 
+        editId = null; 
+        document.getElementById('u_nom').value = '';
+        document.getElementById('u_sen').value = '';
+        document.getElementById('u_car').selectedIndex = 0;
+        if(document.getElementById('c_nom')) document.getElementById('c_nom').value = '';
+        if(document.getElementById('c_ema')) document.getElementById('c_ema').value = '';
+        if(document.getElementById('c_tel')) document.getElementById('c_tel').value = '';
+        if(document.getElementById('v_mod')) document.getElementById('v_mod').value = '';
+        if(document.getElementById('v_mar')) document.getElementById('v_mar').value = '';
+        if(document.getElementById('v_cor')) document.getElementById('v_cor').value = '';
+        if(document.getElementById('v_pre')) document.getElementById('v_pre').value = '';
+        document.getElementById(`btn-${p}`).innerText = p === 'c' ? "CADASTRAR" : "SALVAR"; 
+        load(); 
+    }
+    
+    async function del(t, id) { if(confirm('Deseja realmente excluir este item?')) { await fetch(`${API}/${t}/${id}`,{method:'DELETE'}); load(); } }
     window.onload = load;
 </script>
 </body>
